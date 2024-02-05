@@ -1,58 +1,100 @@
 <%- include('../partials/header') %>
 
-<section id="show-page">
-  <div>Title: </div>
-  <div><%= movie.title %></div>
-  <div>Release Year: </div>
-  <div><%= movie.releaseYear %></div>
-  <div>Rating: </div>
-  <div><%= movie.mpaaRating %></div>
-  <div>Now Showing: </div>
-  <div><%= movie.nowShowing ? 'Yes' : 'Nope' %></div>
-  <!-- start cast list -->
+  <section id="show-page">
+    <div>Title: </div>
+    <div>
+      <%= movie.title %>
+    </div>
+    <div>Release Year: </div>
+    <div>
+      <%= movie.releaseYear %>
+    </div>
+    <div>Rating: </div>
+    <div>
+      <%= movie.mpaaRating %>
+    </div>
+    <div>Now Showing: </div>
+    <div>
+      <%= movie.nowShowing ? 'Yes' : 'Nope' %>
+    </div>
+    <!-- start cast list -->
 
-  <!-- end cast list -->
-</section>
-<!-- add to cast form below this comment -->
+    <!-- end cast list -->
+  </section>
+  <!-- add to cast form below this comment -->
 
-<br><br><h2>Reviews</h2>
-<form id="add-review-form" method="POST"
-  action="/movies/<%= movie._id %>/reviews">
-  <label>Review:</label>
-  <textarea name="content"></textarea>
-  <label>Rating:</label>
-  <select name="rating">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5" selected>5</option>
-  </select>
-  <input type="submit" value="Add Review">
-</form>
+  <br><br>
+  <h2>Reviews</h2>
+  <form id="add-review-form" method="POST" action="/movies/<%= movie._id %>/reviews">
+    <label>Review:</label>
+    <textarea name="content"></textarea>
+    <label>Rating:</label>
+    <select name="rating">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5" selected>5</option>
+    </select>
+    <input type="submit" value="Add Review">
+  </form>
 
-<% if (movie.reviews.length) { %>
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Review</th>
-        <th>Rating</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% movie.reviews.forEach(function(r) { %>
+  <% if (movie.reviews.length) { %>
+    <table>
+      <thead>
         <tr>
-          <!-- .toLocaleDateString() provides a more friendly date format -->
-          <td><%= r.createdAt.toLocaleDateString() %></td>
-          <td><%= r.content %></td>
-          <td><%= r.rating %></td>
+          <th>Date</th>
+          <th>Review</th>
+          <th>Rating</th>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
-<% } else { %>
-  <h5>No Reviews Yet</h5>
-<% } %>
-  
-<%- include('../partials/footer') %>
+      </thead>
+      <tbody>
+        <% movie.reviews.forEach(function(r) { %>
+          <tr>
+            <!-- .toLocaleDateString() provides a more friendly date format -->
+            <td>
+              <%= r.createdAt.toLocaleDateString() %>
+            </td>
+            <td>
+              <%= r.content %>
+            </td>
+            <td>
+              <%= r.rating %>
+            </td>
+          </tr>
+          <% }); %>
+      </tbody>
+    </table>
+    <% } else { %>
+      <h5>No Reviews Yet</h5>
+      <% } %>
+
+        <!-- Display a dropdown of available performers -->
+        <br><br>
+        <h2>Add a performer</h2>
+        <form id="add-review-form" method="POST" action="/movies/<%= movie._id %>/performers">
+          <select name="performerId">
+            <% availablePerformers.forEach((performer)=> { %>
+              <option value="<%= performer._id %>">
+                <%= performer.name %>
+              </option>
+              <% }); %>
+          </select>
+          <input type="submit" value="Add Performer">/
+        </form>
+
+        <!-- Display the cast -->
+        <% if (movie.cast.length) { %>
+          <h3>Performers</h3>
+          <ul>
+            <% movie.cast.forEach((performer)=> { %>
+              <li>
+                <%= performer.name %>
+              </li>
+              <% }); %>
+          </ul>
+          <% } else { %>
+            <h5>No Performers Yet</h5>
+            <% } %>
+
+              <%- include('../partials/footer') %>

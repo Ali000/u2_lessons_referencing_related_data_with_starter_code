@@ -1,4 +1,5 @@
 const Movie = require('../models/movie');
+const Performer = require("../models/performer");
 
 module.exports = {
   index,
@@ -13,8 +14,15 @@ async function index(req, res) {
 }
 
 async function show(req, res) {
-  const movie = await Movie.findById(req.params.id);
-  res.render('movies/show', { title: 'Movie Detail', movie });
+  const movie = await Movie.findById(req.params.id).populate("cast");
+  const performers = await Performer.find({});
+  const movieCast = movie.cast;
+  const availablePerformers = performers.filter((performer) => {
+    if(!movieCast.includes(performer)) {
+      return performer;
+    }
+  });
+  res.render('movies/show', { title: 'Movie Detail', movie, availablePerformers });
 }
 
 function newMovie(req, res) {
